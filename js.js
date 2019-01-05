@@ -88,6 +88,7 @@ function handlePlayerInput(x, y) {
 OnResizeCalled();	
 
 let lvl = Lvl();
+let camera = Camera();
 let player = Player();
 
 function roll() {
@@ -97,7 +98,7 @@ function roll() {
     ctx.fillStyle = game.bg;
     ctx.fillRect(0, 0, game.width, game.height);
 
-    lvl.run();
+    camera.run();
 
     if (game.mode == "play") {
         player.run();
@@ -107,4 +108,5 @@ function roll() {
 GSM.registerMe("main", (data) => {
 });
 
+lvl.makeMaze();
 roll();

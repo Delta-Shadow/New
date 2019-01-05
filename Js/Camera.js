@@ -5,14 +5,16 @@ let Camera = (() => {
             cw = data.cw; ch = data.ch;
             level = data.level;
             mf = game.width/(w * cw);
+            x = (level[0].length*cw) / 2;
+            y = (level.length*ch) / 2;
         } else if (data == "move top left") {
-            vx = -2; vy = -2;
+            vx = -1; vy = -1;
         } else if (data == "move top right") {
-            vx = 2; vy = -2;
+            vx = 1; vy = -1;
         } else if (data == "move bottom left") { 
-            vx = -2; vy = 2;
+            vx = -1; vy = 1;
         } else if (data == "move bottom right") {
-            vx = 2; vy = 2;
+            vx = 1; vy = 1;
         } else if (data.title == "vx") {
             vx = data.value;
         } else if (data.title == "vy") {
@@ -23,7 +25,7 @@ let Camera = (() => {
     // Props
         let x = 0; let y = 0; // Center. Not Top left.
         let vx = 0; let vy = 0;
-        let w = 2; let h = 4; // Unit: no. of cells i.e. 3 means 3 cells wide. Must always be even.
+        let w = 4; let h = 8; // Unit: no. of cells i.e. 3 means 3 cells wide. Must always be even.
         let padding = 3;
         let cw, ch;
         let tl = {x: 0, y: 0};
@@ -46,10 +48,6 @@ let Camera = (() => {
 
     let draw = () => {
         ctx.fillStyle = "rgb(156, 39, 176)";
-        /*ctx.strokeStyle = "#ab20fd";
-        ctx.lineWidth = 10;
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";*/
         for (let i = tl.y; i < tl.y + h + padding; i++) {
             for (let j = tl.x; j < tl.x + w + padding; j++) {
                 try {
@@ -59,6 +57,13 @@ let Camera = (() => {
                 } catch (error) {}
             }
         }
+        /*for (let i in level) {
+            for (let j in level[i]) {
+                if (level[i][j] == 1) {
+                    ctx.fillRect( (j*cw)*mf, (i*ch)*mf, cw*mf, ch*mf );
+                }
+            }
+        }*/
     }
 
     let run = () => {
