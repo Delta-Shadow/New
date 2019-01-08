@@ -17,7 +17,7 @@ let Player = (() => {
 
     // Properties
         let x = 0; let y = 0; // Center Coords. Inside the Maze. Pseudo.
-        let w = 30; let h = 30;
+        let w = 25; let h = 25;
         let screenX = game.width/2-w/2; let screenY = game.height/2-h/2; // Top Left Coords. On Screen Player. Real.
         let mazeWidth = 0; let mazeHeight = 0;
         let vx = 0; vy = 0;
