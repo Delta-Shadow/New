@@ -53,35 +53,17 @@ function touchInput(e) {
     let x = e.changedTouches[0].clientX;
     let y = e.changedTouches[0].clientY;
     if (game.mode == "play") {
-        handlePlayerInput(x, y)
+        GSM.postMsg("player", {title: "move", x: x, y: y});
     }
 }
 
 function mouseInput(e) {
     e.preventDefault();
-    let x = e.clientX;
-    let y = e.clientY;   
+    let rect = canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;   
     if (game.mode == "play") {
-        handlePlayerInput(x, y)
-    }
-}
-
-function handlePlayerInput(x, y) {
-    if (x < window.innerWidth/2 && y < window.innerHeight/2) {  /*Top Left*/
-        GSM.postMsg("player", "move top left"); 
-        GSM.postMsg("camera", "move top left"); 
-    }
-    if (x > window.innerWidth/2 && y < window.innerHeight/2) { /*Top Right*/
-        GSM.postMsg("player", "move top right"); 
-        GSM.postMsg("camera", "move top right"); 
-    }
-    if (x < window.innerWidth/2 && y > window.innerHeight/2) { /*Bottom Left*/  
-        GSM.postMsg("player", "move bottom left"); 
-        GSM.postMsg("camera", "move bottom left"); 
-    }
-    if (x > window.innerWidth/2 && y > window.innerHeight/2) { /*Bottom Right*/ 
-        GSM.postMsg("player", "move bottom right"); 
-        GSM.postMsg("camera", "move bottom right"); 
+        GSM.postMsg("player", {title: "move", x: x, y: y});
     }
 }
 
@@ -99,6 +81,7 @@ function roll() {
     ctx.fillRect(0, 0, game.width, game.height);
 
     camera.run();
+    //lvl.run();
 
     if (game.mode == "play") {
         player.run();

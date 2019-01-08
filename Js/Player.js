@@ -2,15 +2,26 @@ let Player = (() => {
     
     GSM.registerMe("player", (data) => {
         // This section for receiving messages from the Universe
-        if (data == "move top left") { direction = "top left"; }
-        if (data == "move top right") { direction = "top right"; }
-        if (data == "move bottom left") { direction = "bottom left"; }
-        if (data == "move bottom right") { direction = "bottom right"; }
+        switch (data.title) {
+            case "init":
+                mazeWidth = data.mW; mazeHeight = data.mH;
+                x = mazeWidth / 2;
+                y = mazeHeight / 2;
+                break;
+            
+            case "move":
+                changeDirection(data.x, data.y);
+                break;
+        }
     });
 
     // Properties
-        let x = game.width/2; let y = game.height/2;
+        let x = 0; let y = 0; // Center Coords. Inside the Maze. Pseudo.
         let w = 30; let h = 30;
+        let screenX = game.width/2-w/2; let screenY = game.height/2-h/2; // Top Left Coords. On Screen Player. Real.
+        let mazeWidth = 0; let mazeHeight = 0;
+        let vx = 0; vy = 0;
+        let speed = 1;
         let direction = "none";
 
         // Description of Animations for this obj
@@ -19,7 +30,7 @@ let Player = (() => {
             list: {
                 normal: {
                     update: () => {},
-                    draw: () => { ctx.fillStyle = "White"; ctx.fillRect(x, y, w, h) }
+                    draw: () => { ctx.fillStyle = "White"; ctx.fillRect(screenX, screenY, w, h) }
                 }, 
                 intro: {
                     update: () => {},
@@ -52,31 +63,11 @@ let Player = (() => {
         }
 
         // Updating Mechanics...
-            // Collisions -
-            let topEdge = ctx.getImageData(x+(w/3), y-2, w/3, 1).data;
-            for (let i = 0; i < topEdge.length; i += 4) {
-                if (topEdge[i] == 156 && topEdge[i+1] == 39 && topEdge[i+2] == 176) {
-                    GSM.postMsg("camera", {title: "vy", value: 0}); break;
-                }
-            }
-            let bottomEdge = ctx.getImageData(x+(w/3), y+h+1, w/3, 1).data;
-            for (let i = 0; i < topEdge.length; i += 4) {
-                if (bottomEdge[i] == 156 && bottomEdge[i+1] == 39 && bottomEdge[i+2] == 176) {
-                    GSM.postMsg("camera", {title: "vy", value: 0}); break;
-                }
-            }
-            let leftEdge = ctx.getImageData(x-2, y+(h/3), 1, h/3).data;
-            for (let i = 0; i < topEdge.length; i += 4) {
-                if (leftEdge[i] == 156 && leftEdge[i+1] == 39 && leftEdge[i+2] == 176) {
-                    GSM.postMsg("camera", {title: "vx", value: 0}); break;
-                }
-            }
-            let rightEdge = ctx.getImageData(x+w+1, y+(h/3), 1, h/3).data;
-            for (let i = 0; i < topEdge.length; i += 4) {
-                if (rightEdge[i] == 156 && rightEdge[i+1] == 39 && rightEdge[i+2] == 176) {
-                    GSM.postMsg("camera", {title: "vx", value: 0}); break;
-                }
-            }
+        handleCollisions();
+        x += vx;
+        y += vy;
+        // Let camera know about me
+        GSM.postMsg("camera", {title: "player coords", x: x, y: y});
     }
 
     let draw = () => {
@@ -86,6 +77,54 @@ let Player = (() => {
             anime.list[ anime.queue[0] ].draw();
         }
     }
+
+    let changeDirection = (tx, ty) => {
+        xVector = (tx - screenX);
+        yVector = (ty - screenX);
+        magnitude = Math.abs(Math.sqrt(xVector*xVector + yVector*yVector));
+        if (magnitude != 0) {
+            xUnit = xVector / magnitude;
+            yUnit = yVector / magnitude;
+            vx = xUnit * speed;
+            vy = yUnit * speed;
+        }
+    }
+
+    let handleCollisions = () => {
+        if (checkCollision("up")) {
+            vx = 0; vy = 0;
+            y += 0.1;
+        } 
+        if (checkCollision("down")) {
+            vx = 0; vy = 0;
+            y -= 0.1;
+        }
+        if (checkCollision("left")) {
+            vx = 0; vy = 0;
+            x += 0.1;
+        } 
+        if (checkCollision("right")) {
+            vx = 0; vy = 0;
+            x -= 0.1;
+        }
+    }
+
+    let checkCollision = (side) => {
+        switch (side) {
+            case "up":
+                a = screenX+(w/3); b = screenY-2; c = w/3; d = 1; break;
+            case "down":
+                a = screenX+(w/3); b = screenY+h+1; c = w/3; d = 1; break;
+            case "left":
+                a = screenX-2; b = screenY+(h/3); c = 1; d = h/3; break;
+            case "right":
+                a = screenX+w+1; b = screenY+(h/3); c = 1; d = h/3; break;
+        }
+        let edge = ctx.getImageData(a, b, c, d).data;
+        for (let i = 0; i < edge.length; i += 4) {
+            if (edge[i] == 156 && edge[i+1] == 39 && edge[i+2] == 176) { return true }
+        }
+    };
 
     // All Public Methods
     let run = () => {

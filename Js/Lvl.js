@@ -15,6 +15,7 @@ let Lvl = (() => {
                 }
             }
         let cw = 10; let ch = 10;
+        let color = "rgb(156, 39, 176)";
 
     let getRandInt = (min, max) => { // Both Inclusive
         min = Math.ceil(min);
@@ -57,8 +58,6 @@ let Lvl = (() => {
 
     let createMaze = () => {
         recurse(0, 0, level[0].length-1, level.length-1); // Random generation
-        level[h/2][w/2] = 0; // Making the center vacant for player
-
         // Adding boundary at top and bottom
         level.unshift( [] );
         for (let i = 0; i < w; i++) { level[0][i] = 1 }
@@ -71,12 +70,24 @@ let Lvl = (() => {
             level[i].push(1);
         }
 
-        // Hand over the level design to camera
-        GSM.postMsg("camera", {title: "init", cw: cw, ch: ch, level: level});
+        // Hand over the level design to everyone who needs
+        GSM.postMsg("camera", {title: "init", cw: cw, ch: ch, cols: w, rows: h, level: level});
+        GSM.postMsg("player", {title: "init", mW: w*cw, mH: h*ch});
     }
 
+    let run = () => {
+        ctx.fillStyle = color; 
+        for (let i in level) {
+            for (let j in level[i]) {
+                if (level[i][j] == 1) {
+                    ctx.fillRect( (j*cw), (i*ch), cw, ch );
+                }
+            }
+        }
+    }
 
     return {
+        run: run,
         makeMaze: createMaze
     }
 
