@@ -51,8 +51,8 @@ function OnResizeCalled() {
 function touchInput(e) {
     e.preventDefault();
     let rect = canvas.getBoundingClientRect();
-    let x = e.changedTouches[0].clientX - rect.left;
-    let y = e.changedTouches[0].clientY - rect.top;
+    let x = e.touches[0].clientX - rect.left;
+    let y = e.touches[0].clientY - rect.top;
     if (game.mode == "play") {
         GSM.postMsg("player", {title: "move", x: x, y: y});
     }
