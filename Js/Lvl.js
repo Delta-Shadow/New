@@ -62,13 +62,21 @@ let Lvl = (() => {
         level.unshift( [] );
         for (let i = 0; i < w; i++) { level[0][i] = 1 }
         level.push( [] );
-        for (let i = 0; i < w; i++) { level[level.length-1][i] = 1 }
+        for (let i = 0; i < w; i++) { level[w-1][i] = 1 }
 
         // Adding boundary at left and right
         for (let i in level) {
             level[i].unshift(1);
             level[i].push(1);
         }
+        w += 2; h += 2;
+        
+        // Customizing the center
+        /*level[h/2 - 0][w/2 - 1] = 2;
+        level[h/2 - 0][w/2 + 1] = 2;
+        level[h/2 + 2][w/2 - 1] = 2;
+        level[h/2 + 2][w/2 + 1] = 2;*/
+        level[h/2][w/2] = 0;
 
         // Hand over the level design to everyone who needs
         GSM.postMsg("camera", {title: "init", cw: cw, ch: ch, cols: w, rows: h, level: level});

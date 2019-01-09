@@ -40,12 +40,15 @@ let Camera = (() => {
         ctx.fillStyle = "rgb(156, 39, 176)";
         for (let i in level) {
             for (let j in level[i]) {
-                if (level[i][j] == 1) {
+                if (level[i][j] >= 1) {
+                    if (level[i][j] == 2) {ctx.fillStyle = "red"} else {ctx.fillStyle = "rgb(156, 39, 176)"}
                     let a = (j*cw - tl.x)*mf; 
                     let b = (i*ch - tl.y)*mf; 
                     let c = cw*mf; 
                     let d = ch*mf;
-                    ctx.fillRect(a, b, c, d);
+                    if (a >= 0 || a <= game.width || b >= 0 || b <= game.height) {
+                        ctx.fillRect(a, b, c, d);
+                    }
                 }
             }
         }

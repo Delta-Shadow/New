@@ -5,8 +5,8 @@ let Player = (() => {
         switch (data.title) {
             case "init":
                 mazeWidth = data.mW; mazeHeight = data.mH;
-                x = mazeWidth / 2;
-                y = mazeHeight / 2;
+                x = mazeWidth / 2 + 5;
+                y = mazeHeight / 2 - 5;
                 break;
             
             case "move":
@@ -23,6 +23,7 @@ let Player = (() => {
         let vx = 0; vy = 0;
         let speed = 1;
         let direction = "none";
+        let timer = 0;
 
         // Description of Animations for this obj
         let anime = {
@@ -63,11 +64,18 @@ let Player = (() => {
         }
 
         // Updating Mechanics...
+        timer++;
         handleCollisions();
         x += vx;
         y += vy;
         // Let camera know about me
         GSM.postMsg("camera", {title: "player coords", x: x, y: y});
+        // If we are moving, launch particles
+        if (vx != 0 || vy != 0) {
+            if (timer % 1 == 0) {
+                GSM.postMsg("particles", {name: "spawn", type: "trail", x: screenX+w/2, y: screenY+h/2, vx: vx, vy: vy});
+            }
+        }
     }
 
     let draw = () => {

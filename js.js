@@ -73,6 +73,8 @@ OnResizeCalled();
 let lvl = Lvl();
 let camera = Camera();
 let player = Player();
+let vfx = VFX();
+let particleSystem = Particles();
 
 function roll() {
     game.roller = requestAnimFrame(roll);
@@ -81,8 +83,10 @@ function roll() {
     ctx.fillStyle = game.bg;
     ctx.fillRect(0, 0, game.width, game.height);
 
-    camera.run();
     //lvl.run();
+    camera.run();
+    vfx.run();
+    particleSystem.run();
 
     if (game.mode == "play") {
         player.run();
