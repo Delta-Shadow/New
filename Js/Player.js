@@ -19,14 +19,8 @@ let Player = (() => {
         let x = 0; let y = 0; // Center Coords. Inside the Maze. Pseudo.
         let w = 25; let h = 25;
         let screenX = game.width/2-w/2; let screenY = game.height/2-h/2; // Top Left Coords. On Screen Player. Real.
-        let mazeWidth = 0; let mazeHeight = 0;
         let vx = 0; vy = 0;
-        let g = {x: 0, y: 0}
-        let e = 0.1;
-        let speed = 1;
-        let gravity = 0.01;
-        let capV = 0.6;
-        let direction = "none";
+        let speed = 0.8;
         let timer = 0;
 
         // Description of Animations for this obj
@@ -70,9 +64,6 @@ let Player = (() => {
         // Updating Mechanics...
         timer++;
         handleCollisions();
-        //vx += g.x; vy += g.y;
-        if (vx > capV) {vx = capV}
-        if (vy > capV) {vy = capV}
         x += vx;
         y += vy;
         // Let camera know about me
@@ -94,46 +85,25 @@ let Player = (() => {
     }
 
     let changeDirection = (tx, ty) => {
-        /*xVector = (tx - screenX);
-        yVector = (ty - screenX);
-        magnitude = Math.abs(Math.sqrt(xVector*xVector + yVector*yVector));
-        if (magnitude != 0) {
-            xUnit = xVector / magnitude;
-            yUnit = yVector / magnitude;
-            vx = xUnit * speed;
-            vy = yUnit * speed;
-        }*/
         vx = 0; vy = 0;
-        /*if (tx <= game.width/2 && ty <= game.height/2) { g.x = -gravity; g.y = -gravity } // Top left
-        if (tx >= game.width/2 && ty <= game.height/2) { g.x = gravity; g.y = -gravity } // Top Right
-        if (tx <= game.width/2 && ty >= game.height/2) { g.x = -gravity; g.y = gravity } // Bottom left
-        if (tx >= game.width/2 && ty >= game.height/2) { g.x = gravity; g.y = gravity } // Bottom right*/
-        if (tx <= game.width/2 && ty <= game.height/2) { vx = -capV; vy = -capV } // Top left
-        if (tx >= game.width/2 && ty <= game.height/2) { vx = capV; vy = -capV } // Top Right
-        if (tx <= game.width/2 && ty >= game.height/2) { vx = -capV; vy = capV } // Bottom left
-        if (tx >= game.width/2 && ty >= game.height/2) { vx = capV; vy = capV } // Bottom right
+        if (tx <= game.width/2 && ty <= game.height/2) { vx = -speed; vy = -speed } // Top left
+        if (tx >= game.width/2 && ty <= game.height/2) { vx = speed; vy = -speed } // Top Right
+        if (tx <= game.width/2 && ty >= game.height/2) { vx = -speed; vy = speed } // Bottom left
+        if (tx >= game.width/2 && ty >= game.height/2) { vx = speed; vy = speed } // Bottom right
     }
 
     let handleCollisions = () => {
         if (checkCollision("up")) {
-            //vx = 0; vy = 0;
-            //vy *= -e;
-            y += capV;
+            y += speed;
         } 
         if (checkCollision("down")) {
-            //vx = 0; vy = 0;
-            y -= capV;
-           // vy *= -e;
+            y -= speed;
         }
         if (checkCollision("left")) {
-            //vx = 0; vy = 0;
-            x += capV;
-            //vx *= -e;
+            x += speed;
         } 
         if (checkCollision("right")) {
-            //vx = 0; vy = 0;
-            x -= capV;
-            //vx *= -e;
+            x -= speed;
         }
     }
 

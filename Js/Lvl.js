@@ -11,7 +11,7 @@ let Lvl = (() => {
             for (let i = 0; i < h; i++) {
                 level.push( [] );
                 for (let j = 0; j < w; j++) {
-                    level[i].push(0);
+                    level[i].push(1);
                 }
             }
         let cw = 10; let ch = 10;
@@ -23,41 +23,24 @@ let Lvl = (() => {
         return Math.floor(Math.random() * (max-min+1)) + min;
     }
 
-    let addVertiBlocks = (index, range1, range2, randIndex) => {
-        for (let i = range1; i < range2; i++) {
-            level[i][index] = 1;
-        }
-        level[randIndex][index] = 0;
-    }
 
-    let addHoriBlocks = (index, range1, range2, randIndex) => {
-        for (let i = range1; i < range2; i++) {
-            level[index][i] = 1;
-        }
-        level[index][randIndex] = 0;
-    }
-
-    let recurse = (x1, y1, x2, y2) => {
-        if (x2 - x1 <= 1 || y2 - y1 <= 1) {return}
-
-        let x = getRandInt(x1, x2);
-        let y = getRandInt(y1, y2);
-
-        if (x2 - x1 >= y2 - y1) { // Width of given area is greater than height
-            // Vertical Split
-            addVertiBlocks(x, y1, y2, getRandInt(y1, y2));
-            recurse(x1, y1, x-2, y2);
-            recurse(x+1, y1, x2, y2);
-        } else { // Height of given area is greater than width
-            // Horizontal Split
-            addHoriBlocks(y, x1, x2, getRandInt(x1, x2));
-            recurse(x1, y1, x2, y-1);
-            recurse(x1, y+1, x2, y2);
+    let make = () => {
+        let x = 0; let y = 0; 
+        for (let y = 0; y < level.length; y += 2) {
+            for (let x = 0; x < level[y].length; x += 2) {
+                let dir = getRandInt(1, 2);
+                level[y][x] = 0;
+                if (dir == 1 && x + 1 < w) { // punch right
+                    level[y][x+1] = 0;
+                } else if (y + 1 < h) { // go down
+                    level[y+1][x] = 0;
+                }
+            }
         }
     }
 
     let createMaze = () => {
-        recurse(0, 0, level[0].length-1, level.length-1); // Random generation
+        make();
         // Adding boundary at top and bottom
         level.unshift( [] );
         for (let i = 0; i < w; i++) { level[0][i] = 1 }
@@ -72,10 +55,6 @@ let Lvl = (() => {
         w += 2; h += 2;
         
         // Customizing the center
-        /*level[h/2 - 0][w/2 - 1] = 2;
-        level[h/2 - 0][w/2 + 1] = 2;
-        level[h/2 + 2][w/2 - 1] = 2;
-        level[h/2 + 2][w/2 + 1] = 2;*/
         level[h/2][w/2] = 0;
 
         // Hand over the level design to everyone who needs
