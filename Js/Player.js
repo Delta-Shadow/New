@@ -17,6 +17,7 @@ let Player = (() => {
 
     // Properties
         let x = 0; let y = 0; // Center Coords. Inside the Maze. Pseudo.
+        let oldX = 0; let oldY = 0;
         let w = 25; let h = 25;
         let screenX = game.width/2-w/2; let screenY = game.height/2-h/2; // Top Left Coords. On Screen Player. Real.
         let vx = 0; vy = 0;
@@ -63,17 +64,16 @@ let Player = (() => {
 
         // Updating Mechanics...
         timer++;
+        if (timer > 1) {oldX = x; oldY = y};
         handleCollisions();
         x += vx;
         y += vy;
         // Let camera know about me
         GSM.postMsg("camera", {title: "player coords", x: x, y: y});
         // If we are moving, launch particles
-        //if (vx != 0 || vy != 0) {
-            if (timer % 1 == 0) {
-                //GSM.postMsg("particles", {name: "spawn", type: "trail", x: screenX+w/2, y: screenY+h/2, vx: vx, vy: vy});
+            if (timer % 2 == 0) {
+                GSM.postMsg("particles", {name: "spawn", type: "trail", x: screenX+w/2, y: screenY+h/2, vx: vx, vy: vy});
             }
-        //}
     }
 
     let draw = () => {

@@ -22,7 +22,6 @@ let Camera = (() => {
         let x = 0; let y = 0; // Center. Not Top left. Of Player.
         let w = 30; let h = 30;
         let cw, ch;
-        let mazeWidth = 0; let mazeHeight = 0;
         let level = [];
         let mf = 1; // Magnification Factor. Not to be confused with anything else.
         let tl = {x: 0, y: 0};

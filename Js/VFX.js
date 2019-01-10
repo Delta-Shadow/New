@@ -216,11 +216,20 @@ let Particles = () => {
         }
     });
 
+    let splatter = Math.PI/12;
     let listOfParticles = [];
 
     let spawn = (type, x, y, vx, vy) => {
         if (type == "trail") {
-            listOfParticles.push(Particle(x, y, -vx*10, -vy*10));
+            let direction = {x: -(vx/Math.sqrt(vx*vx+vy*vy)), y: -(vy/Math.sqrt(vx*vx+vy*vy))}
+            let angle = Math.atan(direction.y/direction.x);
+            if (direction.x > 0 && direction.y > 0) {angle += 0} // First Quadrant
+            if (direction.x < 0 && direction.y > 0) {angle += Math.PI} // Second Quadrant
+            if (direction.x < 0 && direction.y < 0) {angle += Math.PI} // Third Quadrant
+            if (direction.x > 0 && direction.y < 0) {angle += 0} // Fourth Quadrant
+            angle =  Math.random()*((angle+splatter) - (angle-splatter)) + (angle-splatter);
+            let v = {x: 3*Math.cos(angle), y: 3*Math.sin(angle)};
+            listOfParticles.push(Particle(x, y, v.x, v.y));
         }
         if (type == "explosion") {
             for (var i = 0; i <= 20; i++) {
@@ -253,7 +262,8 @@ let Particles = () => {
 }
 
 let Particle = (m_x, m_y, m_vx, m_vy) => {
-    let x = m_x; let y = m_y; let v = {x: m_vx, y: m_vy};
+    let x = m_x; let y = m_y; 
+    let v = {x: m_vx, y: m_vy};
     let opacity = 1;
     let w = 3; let h = 3;
     let color = "rgba(255, 0, 0, " + opacity + ")";
@@ -261,7 +271,7 @@ let Particle = (m_x, m_y, m_vx, m_vy) => {
     let update = () => {
         x += v.x;
         y += v.y;
-        opacity -= 0.1;
+        opacity -= 0.01;
         color = "rgba(255, 0, 0, " + opacity + ")";
     }
 
