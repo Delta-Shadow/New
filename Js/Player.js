@@ -23,6 +23,8 @@ let Player = (() => {
         let speed = 0.8;
         let blocked = {x: false, y: false}
         let timer = 0;
+        let color = "rgb(234, 181, 67)";
+        let blocksColor = {r: 179, g: 55, b: 113};
 
         // Description of Animations for this obj
         let anime = {
@@ -30,7 +32,7 @@ let Player = (() => {
             list: {
                 normal: {
                     update: () => {},
-                    draw: () => { ctx.fillStyle = "White"; ctx.fillRect(screenX, screenY, w, h) }
+                    draw: () => { ctx.fillStyle = color; ctx.fillRect(screenX, screenY, w, h) }
                 }, 
                 intro: {
                     update: () => {},
@@ -122,7 +124,7 @@ let Player = (() => {
         }
         let edge = ctx.getImageData(a, b, c, d).data;
         for (let i = 0; i < edge.length; i += 4) {
-            if (edge[i] == 156 && edge[i+1] == 39 && edge[i+2] == 176) { return true }
+            if (edge[i] == blocksColor.r && edge[i+1] == blocksColor.g && edge[i+2] == blocksColor.b) { return true }
         }
     };
 

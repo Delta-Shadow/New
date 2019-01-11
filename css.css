@@ -6,6 +6,7 @@
 body {
     overflow: hidden;
     touch-action: none;
+    background-color: black;
 }
 
 canvas {

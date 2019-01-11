@@ -25,22 +25,18 @@ let Camera = (() => {
         let level = [];
         let mf = 1; // Magnification Factor. Not to be confused with anything else.
         let tl = {x: 0, y: 0};
+        let blocksColor = "rgb(179, 55, 113)";
     
-    function snap(n, i) {
-        if (n % i > i/2) {return ((Math.floor(n/i)*i) + i)} else if (n % i <= i/2) {return (Math.floor(n/i)*i)}
-    }
-
     let update = () => {
         tl.x = x - w/2;
         tl.y = y - h/2;
     }
 
     let draw = () => {
-        ctx.fillStyle = "rgb(156, 39, 176)";
+        ctx.fillStyle = blocksColor;
         for (let i in level) {
             for (let j in level[i]) {
                 if (level[i][j] >= 1) {
-                    if (level[i][j] == 2) {ctx.fillStyle = "red"} else {ctx.fillStyle = "rgb(156, 39, 176)"}
                     let a = (j*cw - tl.x)*mf; 
                     let b = (i*ch - tl.y)*mf; 
                     let c = cw*mf; 

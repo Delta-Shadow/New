@@ -17,8 +17,7 @@ let game = {
     width: 360,
     height: 640,
     roller: 0,
-    mode: "play",
-    bg: "black"
+    mode: "play"
 }
 
 window.addEventListener("resize", OnResizeCalled, false);
@@ -80,7 +79,7 @@ function roll() {
     game.roller = requestAnimFrame(roll);
     ctx.clearRect(0, 0, game.width, game.height);
    
-    ctx.fillStyle = game.bg;
+    ctx.fillStyle = "black";
     ctx.fillRect(0, 0, game.width, game.height);
 
     //lvl.run();

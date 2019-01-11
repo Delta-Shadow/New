@@ -267,13 +267,14 @@ let Particle = (m_x, m_y, m_vx, m_vy) => {
     let v = {x: m_vx, y: m_vy};
     let opacity = 1;
     let w = 3; let h = 3;
-    let color = "rgba(255, 0, 0, " + opacity + ")";
+    let color = "rgba(248, 239, 186, " + opacity + ")";
 
     let update = () => {
         x += v.x;
         y += v.y;
         opacity -= 0.01;
-        color = "rgba(255, 0, 0, " + opacity + ")";
+        color = "rgba(248, 239, 186, " + opacity + ")";
+        //color = "rgba(" + game.colors.white.r + ", " + game.colors.white.g + ", " + game.colors.white.b + ", " + opacity + ")";
     }
 
     let draw = () => {
