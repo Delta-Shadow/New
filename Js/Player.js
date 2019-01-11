@@ -17,11 +17,11 @@ let Player = (() => {
 
     // Properties
         let x = 0; let y = 0; // Center Coords. Inside the Maze. Pseudo.
-        let oldX = 0; let oldY = 0;
         let w = 25; let h = 25;
         let screenX = game.width/2-w/2; let screenY = game.height/2-h/2; // Top Left Coords. On Screen Player. Real.
         let vx = 0; vy = 0;
         let speed = 0.8;
+        let blocked = {x: false, y: false}
         let timer = 0;
 
         // Description of Animations for this obj
@@ -64,16 +64,18 @@ let Player = (() => {
 
         // Updating Mechanics...
         timer++;
-        if (timer > 1) {oldX = x; oldY = y};
         handleCollisions();
         x += vx;
         y += vy;
         // Let camera know about me
         GSM.postMsg("camera", {title: "player coords", x: x, y: y});
         // If we are moving, launch particles
-            if (timer % 2 == 0) {
-                GSM.postMsg("particles", {name: "spawn", type: "trail", x: screenX+w/2, y: screenY+h/2, vx: vx, vy: vy});
-            }
+        if (timer % 2 == 0) {
+            GSM.postMsg("particles", {name: "spawn", type: "trail", x: screenX+w/2, y: screenY+h/2, 
+                vx: (blocked.x ? 0 : vx),
+                vy: (blocked.y ? 0 : vy)
+            });
+        }
     }
 
     let draw = () => {
@@ -93,18 +95,18 @@ let Player = (() => {
     }
 
     let handleCollisions = () => {
-        if (checkCollision("up")) {
-            y += speed;
-        } 
-        if (checkCollision("down")) {
-            y -= speed;
-        }
-        if (checkCollision("left")) {
-            x += speed;
-        } 
-        if (checkCollision("right")) {
-            x -= speed;
-        }
+        let topEdge = checkCollision("up"); let bottomEdge = checkCollision("down");
+        let leftEdge = checkCollision("left"); let rightEdge = checkCollision("right");
+        if (topEdge || bottomEdge) {
+            if (topEdge) {y += speed}
+            if (bottomEdge) {y -= speed}
+            blocked.y = true;
+        } else {blocked.y = false}
+        if (leftEdge || rightEdge) {
+            if (leftEdge) {x += speed}
+            if (rightEdge) {x -= speed}
+            blocked.x = true;
+        } else {blocked.x = false}
     }
 
     let checkCollision = (side) => {

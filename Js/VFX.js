@@ -223,10 +223,11 @@ let Particles = () => {
         if (type == "trail") {
             let direction = {x: -(vx/Math.sqrt(vx*vx+vy*vy)), y: -(vy/Math.sqrt(vx*vx+vy*vy))}
             let angle = Math.atan(direction.y/direction.x);
-            if (direction.x > 0 && direction.y > 0) {angle += 0} // First Quadrant
-            if (direction.x < 0 && direction.y > 0) {angle += Math.PI} // Second Quadrant
-            if (direction.x < 0 && direction.y < 0) {angle += Math.PI} // Third Quadrant
-            if (direction.x > 0 && direction.y < 0) {angle += 0} // Fourth Quadrant
+            if (direction.x == 0) {angle = Math.PI/2} // when atan returns undefined
+            if (direction.x < 0) {angle += Math.PI} // Second and Third Quadrant
+            if (direction.x == 0) { // Movement on the Y axis
+                if (direction.y < 0) {angle += Math.PI}
+            }
             angle =  Math.random()*((angle+splatter) - (angle-splatter)) + (angle-splatter);
             let v = {x: 3*Math.cos(angle), y: 3*Math.sin(angle)};
             listOfParticles.push(Particle(x, y, v.x, v.y));
